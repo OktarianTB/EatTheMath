@@ -6,25 +6,25 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public GameObject player;
-    [Range(2f, 5f)] public float inputVelocity = 3f;
 
     Rigidbody2D playerRigidbody;
-    Player playerScript;
     ScoreManager scoreManager;
+    Player playerScript;
 
     bool playerFirstInputDone = false;
     float halfHeight;
-   
+    float inputVelocity = 4.5f;
+
     void Start()
     {
         playerRigidbody = player.GetComponent<Rigidbody2D>();
         playerScript = FindObjectOfType<Player>();
-        scoreManager = FindObjectOfType<ScoreManager>();
         halfHeight = Camera.main.orthographicSize;
+        scoreManager = FindObjectOfType<ScoreManager>();
 
         if (!player)
         {
-            Debug.LogWarning("The Player game object is missing.");
+            Debug.LogWarning("The Player game object is missing");
             return;
         }
         if (!player.GetComponent<Rigidbody2D>())
@@ -35,11 +35,15 @@ public class GameController : MonoBehaviour
         {
             Debug.LogWarning("The Player Circle Class is missing");
         }
+        if (!scoreManager)
+        {
+            Debug.LogWarning("The Score Manager is missing");
+        }
     }
     
     void Update()
     {
-        if (!player || !playerRigidbody || !playerScript)
+        if (!player || !playerRigidbody || !playerScript ||!scoreManager)
         {
             return;
         }
@@ -84,4 +88,16 @@ public class GameController : MonoBehaviour
             scoreManager.RemoveFromScore(75);
         }
     }
+
+    public void CheckState(int score) //Detect wether the player has lost, has won or continue playing
+    {
+        if(score >= scoreManager.scoreToWin)
+        {
+            print("Win");
+        } else if (score < 0) 
+        {
+            print("Lost");
+        }
+    }
+
 }

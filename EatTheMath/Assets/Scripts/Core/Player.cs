@@ -9,17 +9,19 @@ public class Player : MonoBehaviour
     GameObject playerCircle;
     GameObject playerText;
     TextMeshPro textMesh;
+    GameController gameController;
     float minRadius = 0.5f;
     float maxRadius = 2f;
     float maxScore = 1000f;
-    public float radiusIncrementValue; // value that is added to the radius wanted as final
     float circleIncrease; // value that is added each time update is called to the circle's radius
-    [Range(0.5f,2f)] public float circleRadius;
+    public float circleRadius;
+    public float radiusIncrementValue; // value per point that is added to the radius
 
     void Start()
     {
         playerCircle = transform.Find("PlayerCircle").gameObject;
         playerText = transform.Find("PlayerText").gameObject;
+        gameController = FindObjectOfType<GameController>();
         textMesh = playerText.GetComponent<TextMeshPro>();
 
         circleRadius = GetRadius();
@@ -34,13 +36,15 @@ public class Player : MonoBehaviour
         {
             Debug.LogWarning("The child game object 'PlayerText' hasn't been found");
         }
-        UpdateText(0);
+        if (!gameController)
+        {
+            Debug.LogWarning("GameController is missing");
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (!playerCircle || !playerText)
+        if (!playerCircle || !playerText || !gameController)
         {
             return;
         }
@@ -69,14 +73,22 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void UpdateText(int playerScore)
+    public void UpdateText(int playerScore) //Score that is in the circle (can be pos & neg)
     {
-        textMesh.text = playerScore.ToString();
+        gameController.CheckState(playerScore);
+        textMesh.text = Mathf.Min(playerScore, 1000).ToString();
     }
 
     public float GetRadius()
     {
         return playerCircle.transform.localScale.x / 2;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Get value
+        // Add value to score
+        // Destroy object
     }
 
 }
