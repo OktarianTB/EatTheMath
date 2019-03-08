@@ -85,7 +85,7 @@ public class GameController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.KeypadMinus))
         {
-            scoreManager.RemoveFromScore(75);
+            scoreManager.RemoveFromScore(-75);
         }
     }
 

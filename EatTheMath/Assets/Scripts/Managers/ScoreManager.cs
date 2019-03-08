@@ -52,8 +52,8 @@ public class ScoreManager : MonoBehaviour
 
     public void RemoveFromScore(int points)
     {
-        currentScore -= points;
-        player.circleRadius -= points * player.radiusIncrementValue;
+        currentScore += points;
+        player.circleRadius += points * player.radiusIncrementValue;
         player.UpdateText(currentScore);
     }
 

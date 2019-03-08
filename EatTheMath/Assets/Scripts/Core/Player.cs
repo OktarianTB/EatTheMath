@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     GameObject playerText;
     TextMeshPro textMesh;
     GameController gameController;
+    ScoreManager scoreManager;
     float minRadius = 0.5f;
     float maxRadius = 2f;
     float maxScore = 1000f;
@@ -23,6 +24,7 @@ public class Player : MonoBehaviour
         playerText = transform.Find("PlayerText").gameObject;
         gameController = FindObjectOfType<GameController>();
         textMesh = playerText.GetComponent<TextMeshPro>();
+        scoreManager = FindObjectOfType<ScoreManager>();
 
         circleRadius = GetRadius();
         radiusIncrementValue = (maxRadius - minRadius) / maxScore;
@@ -40,11 +42,15 @@ public class Player : MonoBehaviour
         {
             Debug.LogWarning("GameController is missing");
         }
+        if (!scoreManager)
+        {
+            Debug.LogWarning("Score Manager is missing");
+        }
     }
 
     void Update()
     {
-        if (!playerCircle || !playerText || !gameController)
+        if (!playerCircle || !playerText || !gameController || !scoreManager)
         {
             return;
         }
@@ -86,9 +92,30 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Get value
-        // Add value to score
-        // Destroy object
+        GameObject collisionText = collision.transform.Find("TargetValueText").gameObject;
+        if (collisionText)
+        {
+            string text = collisionText.GetComponent<TextMeshPro>().text;
+            int points = int.Parse(text);
+            print(points);
+            ManagePoints(points);
+        }
+        Destroy(collision.gameObject);
     }
 
+    private void ManagePoints(int points)
+    {
+       if(points > 0)
+        {
+            scoreManager.AddToScore(points);
+        }
+        else if (points < 0)
+        {
+            scoreManager.RemoveFromScore(points);
+        }
+       else
+        {
+            Debug.LogWarning("Point is equal to 0");
+        }
+    }
 }
