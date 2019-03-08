@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class Spawner : MonoBehaviour
 {
@@ -9,32 +10,59 @@ public class Spawner : MonoBehaviour
     GameObject spawnedTarget;
     GameObject baseTargetCircle;
     GameObject baseTargetText;
+    GameController gameController;
 
     float minTargetScale = 1.5f;
     float maxTargetScale = 2.5f;
-    int posMinValue = 5;
-    int posMaxValue = 25;
-    int negMinValue = -40;
-    int negMaxValue = -10;
+    int posMinValue = 15;
+    int posMaxValue = 50;
+    int negMinValue = -200;
+    int negMaxValue = -30;
+
+    float timeBetweenSpawn = 3f;
+    float timeCounter = 0;
 
     public Color[] posColorArray;
     public Color[] negColorArray;
 
     void Start()
     {
+        gameController = FindObjectOfType<GameController>();
+
         if (!baseTarget)
         {
             Debug.LogWarning("Target prefab is missing");
             return;
         }
+        if (!gameController)
+        {
+            Debug.LogWarning("GameController is missing");
+        }
+
         SpawnTargetShape();
     }
 
     void Update()
     {
-        if (!baseTarget)
+        if (!baseTarget || !gameController)
         {
             return;
+        }
+
+        ManageSpawnTiming();
+    }
+
+    private void ManageSpawnTiming()
+    {
+        timeCounter += Time.deltaTime;
+        if (timeCounter >= timeBetweenSpawn && gameController.gameIsActive)
+        {
+            SpawnTargetShape();
+            timeCounter = 0;
+            if (timeBetweenSpawn > 1.25f)
+            {
+                timeBetweenSpawn -= 0.15f;
+            }
         }
     }
 
@@ -44,33 +72,55 @@ public class Spawner : MonoBehaviour
         {
             return;
         }
-        spawnedTarget = Instantiate(baseTarget, transform.position, Quaternion.identity);
+        spawnedTarget = Instantiate(baseTarget, GetRandomPosition(), Quaternion.identity);
         baseTargetCircle = spawnedTarget.transform.Find("TargetCircle").gameObject;
         baseTargetText = spawnedTarget.transform.Find("TargetValueText").gameObject;
 
-        float randomScale = Random.Range(minTargetScale, maxTargetScale);
-        baseTargetCircle.transform.localScale = new Vector2(randomScale, randomScale);
+        if (!baseTargetCircle || !baseTargetText)
+        {
+            Debug.LogWarning("The base target circle or text child is missing on the main target prefab");
+            return;
+        }
 
-        float posOrNegRandom = Random.Range(0, 2);
-        int randomColor = Random.Range(0, posColorArray.Length - 1); // assumes that both arrays are the same length
+        SetRandomScale();
+        SetTypeOfTarget();
+    }
+
+    private void SetTypeOfTarget()
+    {
+        float posOrNegRandom = UnityEngine.Random.Range(0, 2);
+        int randomColor = UnityEngine.Random.Range(0, posColorArray.Length - 1); // assumes that both arrays are the same length
         SpriteRenderer spriteRd = baseTargetCircle.GetComponent<SpriteRenderer>();
         TextMeshPro targetTextMesh = baseTargetText.GetComponent<TextMeshPro>();
-        
-        if (posOrNegRandom == 0) // circle is positive type
+
+        if (posOrNegRandom == 1) // circle is positive type
         {
-            string randomValue = Random.Range(posMinValue, posMaxValue).ToString();
+            string randomValue = UnityEngine.Random.Range(posMinValue, posMaxValue).ToString();
             targetTextMesh.text = randomValue;
             spriteRd.color = posColorArray[randomColor];
         }
-        else if (posOrNegRandom == 1) // circle is negative type
+        else if (posOrNegRandom == 0) // circle is negative type
         {
-            string randomValue = Random.Range(negMinValue, negMaxValue).ToString();
+            string randomValue = UnityEngine.Random.Range(negMinValue, negMaxValue).ToString();
             targetTextMesh.text = randomValue;
             spriteRd.color = negColorArray[randomColor];
-        } else
+        }
+        else
         {
             Debug.LogWarning("posOrNegRandom isn't 0 or 1");
         }
+    }
+
+    private void SetRandomScale()
+    {
+        float randomScale = UnityEngine.Random.Range(minTargetScale, maxTargetScale);
+        baseTargetCircle.transform.localScale = new Vector2(randomScale, randomScale);
+    }
+
+    private Vector3 GetRandomPosition()
+    {
+        Vector3 randomPos = new Vector3(transform.position.x, UnityEngine.Random.Range(-3.75f, 3.75f) , 0f);
+        return randomPos;
     }
 
 }

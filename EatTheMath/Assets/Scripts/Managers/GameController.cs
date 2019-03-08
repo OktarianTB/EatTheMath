@@ -10,17 +10,20 @@ public class GameController : MonoBehaviour
     Rigidbody2D playerRigidbody;
     ScoreManager scoreManager;
     Player playerScript;
+    Vector2 finalPos;
 
     bool playerFirstInputDone = false;
+    public bool gameIsActive = true;
     float halfHeight;
-    float inputVelocity = 4.5f;
+    float minVelocity = 4f;
+    float maxVelocity = 5.5f;
 
     void Start()
     {
         playerRigidbody = player.GetComponent<Rigidbody2D>();
         playerScript = FindObjectOfType<Player>();
-        halfHeight = Camera.main.orthographicSize;
         scoreManager = FindObjectOfType<ScoreManager>();
+        halfHeight = Camera.main.orthographicSize;
 
         if (!player)
         {
@@ -47,7 +50,6 @@ public class GameController : MonoBehaviour
         {
             return;
         }
-
         PlayerInput();
         CheckIfPlayerInBoundaries();
     }
@@ -55,20 +57,19 @@ public class GameController : MonoBehaviour
     private void CheckIfPlayerInBoundaries()
     {
         float playerRadius = playerScript.GetRadius();
-        if(player.transform.position.y <= (-halfHeight + playerRadius)){
-            playerRigidbody.velocity = new Vector2(0f, 3f);
-        } else if(player.transform.position.y >= (halfHeight - playerRadius))
+        if(player.transform.position.y <= (-halfHeight + playerRadius))
         {
-            playerRigidbody.velocity = new Vector2(0f, -2f);
+            playerRigidbody.velocity = new Vector2(0f, 4f);
+        }
+        else if(player.transform.position.y >= (halfHeight - playerRadius))
+        {
+            playerRigidbody.velocity = new Vector2(0f, -3f);
         }
     }
 
     private void PlayerInput()
     {
-        if (!playerFirstInputDone)
-        {
-            player.transform.position = new Vector2(player.transform.position.x, 0f);
-        }
+        ManagePlayerMovement();
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -76,16 +77,20 @@ public class GameController : MonoBehaviour
             {
                 playerFirstInputDone = true;
             }
-            playerRigidbody.velocity = new Vector2(0f, inputVelocity);
+            float randomVelocity = UnityEngine.Random.Range(minVelocity, maxVelocity);
+            playerRigidbody.velocity = new Vector2(0f, randomVelocity);
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.KeypadPlus))
+    private void ManagePlayerMovement()
+    {
+        if (!playerFirstInputDone) // the player doesn't move until first input
         {
-            scoreManager.AddToScore(50);
+            player.transform.position = new Vector2(player.transform.position.x, 0f);
         }
-        if (Input.GetKeyDown(KeyCode.KeypadMinus))
+        if (!gameIsActive) // once the player has lost/won, the player stays at his final position
         {
-            scoreManager.RemoveFromScore(-75);
+            player.transform.position = finalPos;
         }
     }
 
@@ -93,11 +98,23 @@ public class GameController : MonoBehaviour
     {
         if(score >= scoreManager.scoreToWin)
         {
-            print("Win");
-        } else if (score < 0) 
+            Debug.Log("Win");
+            DestroyAllTargets();
+        }
+        else if (score < 0) 
         {
-            print("Lost");
+            Debug.Log("Lost");
+            DestroyAllTargets();
         }
     }
 
+    private void DestroyAllTargets()
+    {
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Target"))
+        {
+            Destroy(obj.gameObject);
+        }
+        gameIsActive = false;
+        finalPos = player.transform.position;
+    }
 }

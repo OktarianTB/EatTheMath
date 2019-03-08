@@ -9,8 +9,10 @@ public class Player : MonoBehaviour
     GameObject playerCircle;
     GameObject playerText;
     TextMeshPro textMesh;
+    CircleCollider2D circleCollider;
     GameController gameController;
     ScoreManager scoreManager;
+
     float minRadius = 0.5f;
     float maxRadius = 2f;
     float maxScore = 1000f;
@@ -23,8 +25,8 @@ public class Player : MonoBehaviour
         playerCircle = transform.Find("PlayerCircle").gameObject;
         playerText = transform.Find("PlayerText").gameObject;
         gameController = FindObjectOfType<GameController>();
-        textMesh = playerText.GetComponent<TextMeshPro>();
         scoreManager = FindObjectOfType<ScoreManager>();
+        circleCollider = GetComponent<CircleCollider2D>();
 
         circleRadius = GetRadius();
         radiusIncrementValue = (maxRadius - minRadius) / maxScore;
@@ -34,7 +36,11 @@ public class Player : MonoBehaviour
         {
             Debug.LogWarning("The child game object 'PlayerCircle' hasn't been found");
         }
-        if (!playerText)
+        if (playerText)
+        {
+            textMesh = playerText.GetComponent<TextMeshPro>();
+        }
+        else
         {
             Debug.LogWarning("The child game object 'PlayerText' hasn't been found");
         }
@@ -42,15 +48,23 @@ public class Player : MonoBehaviour
         {
             Debug.LogWarning("GameController is missing");
         }
+        if (!textMesh)
+        {
+            Debug.LogWarning("Text mesh component is missing off the player text");
+        }
         if (!scoreManager)
         {
             Debug.LogWarning("Score Manager is missing");
+        }
+        if (!circleCollider)
+        {
+            Debug.LogWarning("Circle Collider component is missing off of player");
         }
     }
 
     void Update()
     {
-        if (!playerCircle || !playerText || !gameController || !scoreManager)
+        if (!playerCircle || !playerText || !gameController || !scoreManager ||!textMesh ||!circleCollider)
         {
             return;
         }
@@ -61,6 +75,8 @@ public class Player : MonoBehaviour
     {
         float currentRadius = GetRadius();
         float clampedCircleRadius = Mathf.Clamp(circleRadius, minRadius, maxRadius);
+        circleCollider.radius = clampedCircleRadius;
+
         Vector2 currentScale = new Vector2(playerCircle.transform.localScale.x, playerCircle.transform.localScale.y);
         Vector2 scaleIncrement = new Vector2(circleIncrease, circleIncrease);
 
@@ -97,25 +113,8 @@ public class Player : MonoBehaviour
         {
             string text = collisionText.GetComponent<TextMeshPro>().text;
             int points = int.Parse(text);
-            print(points);
-            ManagePoints(points);
+            scoreManager.ManagePoints(points);
         }
         Destroy(collision.gameObject);
-    }
-
-    private void ManagePoints(int points)
-    {
-       if(points > 0)
-        {
-            scoreManager.AddToScore(points);
-        }
-        else if (points < 0)
-        {
-            scoreManager.RemoveFromScore(points);
-        }
-       else
-        {
-            Debug.LogWarning("Point is equal to 0");
-        }
     }
 }

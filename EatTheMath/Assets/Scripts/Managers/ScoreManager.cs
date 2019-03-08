@@ -6,7 +6,6 @@ using TMPro;
 public class ScoreManager : MonoBehaviour
 {
     Player player;
-    GameController gameController;
     TextMeshProUGUI textMesh;
     public GameObject scoreText;
     public int scoreToWin = 1000;
@@ -16,7 +15,6 @@ public class ScoreManager : MonoBehaviour
     void Start()
     {
         player = FindObjectOfType<Player>();
-        gameController = FindObjectOfType<GameController>();
         textMesh = scoreText.GetComponent<TextMeshProUGUI>();
 
         if (!player)
@@ -27,34 +25,30 @@ public class ScoreManager : MonoBehaviour
         {
             Debug.LogWarning("ScoreText is missing");
         }
-        if (!gameController) // not necessary for the moment
+        if (!textMesh)
         {
-            Debug.LogWarning("GameController is missing");
+            Debug.LogWarning("Text Mesh component is missing off of the score text game object");
         }
     }
     
     void Update()
     {
-        if (!player || !scoreText || !gameController)
+        if (!player || !scoreText ||!textMesh)
         {
             return;
         }
     }
-    
-    public void AddToScore(int points)
-    {
-        currentScore += points;
-        totalScore += points;
-        UpdateScoreText();
-        player.circleRadius += points * player.radiusIncrementValue;
-        player.UpdateText(currentScore);
-    }
 
-    public void RemoveFromScore(int points)
+    public void ManagePoints(int points)
     {
         currentScore += points;
         player.circleRadius += points * player.radiusIncrementValue;
         player.UpdateText(currentScore);
+        if(points > 0)
+        {
+            totalScore += points;
+            UpdateScoreText();
+        }
     }
 
     private void UpdateScoreText() //Score in the upper-left corner (total score) 
