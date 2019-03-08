@@ -9,7 +9,8 @@ public class GameController : MonoBehaviour
     [Range(2f, 5f)] public float inputVelocity = 3f;
 
     Rigidbody2D playerRigidbody;
-    Player playerCircle;
+    Player playerScript;
+    ScoreManager scoreManager;
 
     bool playerFirstInputDone = false;
     float halfHeight;
@@ -17,7 +18,8 @@ public class GameController : MonoBehaviour
     void Start()
     {
         playerRigidbody = player.GetComponent<Rigidbody2D>();
-        playerCircle = FindObjectOfType<Player>();
+        playerScript = FindObjectOfType<Player>();
+        scoreManager = FindObjectOfType<ScoreManager>();
         halfHeight = Camera.main.orthographicSize;
 
         if (!player)
@@ -29,7 +31,7 @@ public class GameController : MonoBehaviour
         {
             Debug.LogWarning("The Player game object doesn't have a rigidbody");
         }
-        if (!playerCircle)
+        if (!playerScript)
         {
             Debug.LogWarning("The Player Circle Class is missing");
         }
@@ -37,7 +39,7 @@ public class GameController : MonoBehaviour
     
     void Update()
     {
-        if (!player || !playerRigidbody || !playerCircle)
+        if (!player || !playerRigidbody || !playerScript)
         {
             return;
         }
@@ -48,7 +50,7 @@ public class GameController : MonoBehaviour
 
     private void CheckIfPlayerInBoundaries()
     {
-        float playerRadius = playerCircle.GetRadius();
+        float playerRadius = playerScript.GetRadius();
         if(player.transform.position.y <= (-halfHeight + playerRadius)){
             playerRigidbody.velocity = new Vector2(0f, 3f);
         } else if(player.transform.position.y >= (halfHeight - playerRadius))
@@ -71,6 +73,15 @@ public class GameController : MonoBehaviour
                 playerFirstInputDone = true;
             }
             playerRigidbody.velocity = new Vector2(0f, inputVelocity);
+        }
+
+        if (Input.GetKeyDown(KeyCode.KeypadPlus))
+        {
+            scoreManager.AddToScore(50);
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadMinus))
+        {
+            scoreManager.RemoveFromScore(75);
         }
     }
 }
