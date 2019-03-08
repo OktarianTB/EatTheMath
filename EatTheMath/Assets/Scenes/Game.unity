@@ -468,6 +468,21 @@ PrefabInstance:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2246074855294119797, guid: 4ac37d229dffcd94ba5eaf7310cf839f,
+        type: 3}
+      propertyPath: m_text
+      value: 00:00
+      objectReference: {fileID: 0}
+    - target: {fileID: 2246074855294119797, guid: 4ac37d229dffcd94ba5eaf7310cf839f,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2246074855294119797, guid: 4ac37d229dffcd94ba5eaf7310cf839f,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ac37d229dffcd94ba5eaf7310cf839f, type: 3}
 --- !u!1001 &4692722827621612555

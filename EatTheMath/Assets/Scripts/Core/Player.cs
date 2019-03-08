@@ -68,7 +68,10 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        ManageCircleSize();
+        if (gameController.gameIsActive)
+        {
+            ManageCircleSize();
+        }
     }
 
     private void ManageCircleSize()

@@ -7,14 +7,18 @@ public class ScoreManager : MonoBehaviour
 {
     Player player;
     TextMeshProUGUI textMesh;
+    GameController gameController;
     public GameObject scoreText;
     public int scoreToWin = 1000;
     public int currentScore = 0;
-    int totalScore = 0;
-    
+    float generalTime;
+    float timeInMinutes;
+    string timeInSeconds;
+
     void Start()
     {
         player = FindObjectOfType<Player>();
+        gameController = FindObjectOfType<GameController>();
         textMesh = scoreText.GetComponent<TextMeshProUGUI>();
 
         if (!player)
@@ -29,13 +33,22 @@ public class ScoreManager : MonoBehaviour
         {
             Debug.LogWarning("Text Mesh component is missing off of the score text game object");
         }
+        if (!gameController)
+        {
+            Debug.LogWarning("Game Controller is missing");
+        }
     }
     
     void Update()
     {
-        if (!player || !scoreText ||!textMesh)
+        if (!player || !scoreText ||!textMesh ||!gameController)
         {
             return;
+        }
+
+        if (gameController.gameIsActive)
+        {
+            UpdateTimeScoreText();
         }
     }
 
@@ -44,21 +57,24 @@ public class ScoreManager : MonoBehaviour
         currentScore += points;
         player.circleRadius += points * player.radiusIncrementValue;
         player.UpdateText(currentScore);
-        if(points > 0)
-        {
-            totalScore += points;
-            UpdateScoreText();
-        }
     }
 
-    private void UpdateScoreText() //Score in the upper-left corner (total score) 
+    private void UpdateTimeScoreText()
     {
-        string text = totalScore.ToString();
-        while (text.Length < textMesh.text.Length) // makes sure the score conserves all the 0's in front of it
+        generalTime += Time.deltaTime;
+        if(generalTime > 59.5)
         {
-            text = "0" + text;
+            timeInMinutes++;
+            generalTime = 0;
+        } 
+
+        timeInSeconds = Mathf.Round(generalTime).ToString();
+
+        if(timeInSeconds.Length == 1)
+        {
+            timeInSeconds = "0" + timeInSeconds;
         }
-        textMesh.text = text;
-    } 
+        textMesh.text = timeInMinutes.ToString() + ":" + timeInSeconds;
+    }
 
 }
