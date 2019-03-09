@@ -15,4 +15,14 @@ public class LevelManager : MonoBehaviour
         Application.Quit();
     }
 
+    public void LoadMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void LoadInstructions()
+    {
+        SceneManager.LoadScene(2);
+    }
+
 }

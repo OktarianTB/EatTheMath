@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class TargetMovement : MonoBehaviour
 {
-    public float movementFactor = 1.5f;
-    float radiusOfTarget;
     GameObject targetCircle;
     CircleCollider2D circleCollider;
+    GameController gameController;
+    public float movementFactor = 1.5f;
+    float radiusOfTarget;
 
     void Start()
     {
         targetCircle = transform.Find("TargetCircle").gameObject;
+        gameController = FindObjectOfType<GameController>();
         if (!targetCircle)
         {
             Debug.LogWarning("TargetCircle child is missing");
@@ -20,11 +22,23 @@ public class TargetMovement : MonoBehaviour
         {
             SetColliderRadiusToRadiusOfTarget();
         }
+        if (!gameController)
+        {
+            Debug.LogWarning("Game Controller is missing");
+        }
     }
 
     void Update()
     {
-        MoveTarget();
+        if(!gameController || !targetCircle)
+        {
+            return;
+        }
+
+        if (gameController.gameIsActive)
+        {
+            MoveTarget();
+        }
     }
 
     void SetColliderRadiusToRadiusOfTarget()

@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour
     Rigidbody2D playerRigidbody;
     ScoreManager scoreManager;
     Player playerScript;
-    Vector2 finalPos;
+    Vector2 stopMovingPos;
 
     bool playerFirstInputDone = false;
     public bool gameIsActive = true;
@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
         playerScript = FindObjectOfType<Player>();
         scoreManager = FindObjectOfType<ScoreManager>();
         halfHeight = Camera.main.orthographicSize;
+        stopMovingPos = player.transform.position;
 
         if (!player)
         {
@@ -80,17 +81,26 @@ public class GameController : MonoBehaviour
             float randomVelocity = UnityEngine.Random.Range(minVelocity, maxVelocity);
             playerRigidbody.velocity = new Vector2(0f, randomVelocity);
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            stopMovingPos = player.transform.position;
+            gameIsActive = !gameIsActive;
+            if (gameIsActive)
+            {
+                playerFirstInputDone = false;
+            }
+        }
     }
 
     private void ManagePlayerMovement()
     {
         if (!playerFirstInputDone) // the player doesn't move until first input
         {
-            player.transform.position = new Vector2(player.transform.position.x, 0f);
+            player.transform.position = stopMovingPos;
         }
-        if (!gameIsActive) // once the player has lost/won, the player stays at his final position
+        if (!gameIsActive) // once the player has lost/won or pause, the player stays at his final position
         {
-            player.transform.position = finalPos;
+            player.transform.position = stopMovingPos;
         }
     }
 
@@ -115,6 +125,6 @@ public class GameController : MonoBehaviour
             Destroy(obj.gameObject);
         }
         gameIsActive = false;
-        finalPos = player.transform.position;
+        stopMovingPos = player.transform.position;
     }
 }

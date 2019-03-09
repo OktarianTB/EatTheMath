@@ -14,9 +14,9 @@ public class Spawner : MonoBehaviour
 
     float minTargetScale = 1.5f;
     float maxTargetScale = 2.5f;
-    int posMinValue = 15;
-    int posMaxValue = 50;
-    int negMinValue = -200;
+    int posMinValue = 20;
+    int posMaxValue = 80;
+    int negMinValue = -150;
     int negMaxValue = -30;
 
     float timeBetweenSpawn = 3f;
@@ -61,7 +61,7 @@ public class Spawner : MonoBehaviour
             timeCounter = 0;
             if (timeBetweenSpawn > 1.25f)
             {
-                timeBetweenSpawn -= 0.15f;
+                timeBetweenSpawn -= 0.12f;
             }
         }
     }
@@ -88,26 +88,22 @@ public class Spawner : MonoBehaviour
 
     private void SetTypeOfTarget()
     {
-        float posOrNegRandom = UnityEngine.Random.Range(0, 2);
+        float posOrNegRandom = UnityEngine.Random.Range(0, 11);
         int randomColor = UnityEngine.Random.Range(0, posColorArray.Length - 1); // assumes that both arrays are the same length
         SpriteRenderer spriteRd = baseTargetCircle.GetComponent<SpriteRenderer>();
         TextMeshPro targetTextMesh = baseTargetText.GetComponent<TextMeshPro>();
 
-        if (posOrNegRandom == 1) // circle is positive type
+        if (posOrNegRandom < 5) // circle is positive type
         {
             string randomValue = UnityEngine.Random.Range(posMinValue, posMaxValue).ToString();
             targetTextMesh.text = randomValue;
             spriteRd.color = posColorArray[randomColor];
         }
-        else if (posOrNegRandom == 0) // circle is negative type
+        else if (posOrNegRandom >= 5) // circle is negative type
         {
             string randomValue = UnityEngine.Random.Range(negMinValue, negMaxValue).ToString();
             targetTextMesh.text = randomValue;
             spriteRd.color = negColorArray[randomColor];
-        }
-        else
-        {
-            Debug.LogWarning("posOrNegRandom isn't 0 or 1");
         }
     }
 
