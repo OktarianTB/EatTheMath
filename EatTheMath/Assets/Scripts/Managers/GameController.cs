@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public GameObject player;
+    public GameObject pausePanel;
 
     Rigidbody2D playerRigidbody;
     ScoreManager scoreManager;
@@ -13,6 +14,7 @@ public class GameController : MonoBehaviour
     Vector2 stopMovingPos;
 
     bool playerFirstInputDone = false;
+    bool gameIsFinished = false;
     public bool gameIsActive = true;
     float halfHeight;
     float minVelocity = 4f;
@@ -43,11 +45,19 @@ public class GameController : MonoBehaviour
         {
             Debug.LogWarning("The Score Manager is missing");
         }
+        if (!pausePanel)
+        {
+            Debug.LogWarning("Pause panel is missing from Game Controller game object");
+        }
+        else
+        {
+            pausePanel.gameObject.SetActive(false);
+        }
     }
     
     void Update()
     {
-        if (!player || !playerRigidbody || !playerScript ||!scoreManager)
+        if (!player || !playerRigidbody || !playerScript ||!scoreManager ||!pausePanel)
         {
             return;
         }
@@ -74,31 +84,38 @@ public class GameController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (!playerFirstInputDone)
-            {
-                playerFirstInputDone = true;
-            }
-            float randomVelocity = UnityEngine.Random.Range(minVelocity, maxVelocity);
-            playerRigidbody.velocity = new Vector2(0f, randomVelocity);
+            ManagePlayerVelocity();
         }
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !gameIsFinished)
+        {
+            ManagePauseState();
+        }
+    }
+
+    private void ManagePlayerVelocity()
+    {
+        if (!playerFirstInputDone)
+        {
+            playerFirstInputDone = true;
+        }
+        float randomVelocity = UnityEngine.Random.Range(minVelocity, maxVelocity);
+        playerRigidbody.velocity = new Vector2(0f, randomVelocity);
+    }
+
+    public void ManagePauseState()
+    {
+        if (gameIsActive)
         {
             stopMovingPos = player.transform.position;
-            gameIsActive = !gameIsActive;
-            if (gameIsActive)
-            {
-                playerFirstInputDone = false;
-            }
+            playerFirstInputDone = false;
         }
+        gameIsActive = !gameIsActive;
+        pausePanel.gameObject.SetActive(!gameIsActive);
     }
 
     private void ManagePlayerMovement()
     {
-        if (!playerFirstInputDone) // the player doesn't move until first input
-        {
-            player.transform.position = stopMovingPos;
-        }
-        if (!gameIsActive) // once the player has lost/won or pause, the player stays at his final position
+        if (!playerFirstInputDone || !gameIsActive)
         {
             player.transform.position = stopMovingPos;
         }
@@ -109,11 +126,13 @@ public class GameController : MonoBehaviour
         if(score >= scoreManager.scoreToWin)
         {
             Debug.Log("Win");
+            gameIsFinished = true;
             DestroyAllTargets();
         }
         else if (score < 0) 
         {
             Debug.Log("Lost");
+            gameIsFinished = true;
             DestroyAllTargets();
         }
     }

@@ -13,10 +13,10 @@ public class Spawner : MonoBehaviour
     GameController gameController;
 
     float minTargetScale = 1.5f;
-    float maxTargetScale = 2.5f;
+    float maxTargetScale = 2.2f;
     int posMinValue = 20;
-    int posMaxValue = 80;
-    int negMinValue = -150;
+    int posMaxValue = 120;
+    int negMinValue = -120;
     int negMaxValue = -30;
 
     float timeBetweenSpawn = 3f;
@@ -59,7 +59,7 @@ public class Spawner : MonoBehaviour
         {
             SpawnTargetShape();
             timeCounter = 0;
-            if (timeBetweenSpawn > 1.25f)
+            if (timeBetweenSpawn > 1.4f)
             {
                 timeBetweenSpawn -= 0.12f;
             }
