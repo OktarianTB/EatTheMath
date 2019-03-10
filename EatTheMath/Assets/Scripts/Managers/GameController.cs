@@ -7,6 +7,8 @@ public class GameController : MonoBehaviour
 {
     public GameObject player;
     public GameObject pausePanel;
+    public GameObject winPanel;
+    public GameObject lostPanel;
 
     Rigidbody2D playerRigidbody;
     ScoreManager scoreManager;
@@ -16,7 +18,7 @@ public class GameController : MonoBehaviour
     bool playerFirstInputDone = false;
     bool gameIsFinished = false;
     public bool gameIsActive = true;
-    float halfHeight;
+    public float halfHeight;
     float minVelocity = 4f;
     float maxVelocity = 5.5f;
 
@@ -53,11 +55,27 @@ public class GameController : MonoBehaviour
         {
             pausePanel.gameObject.SetActive(false);
         }
+        if (!lostPanel)
+        {
+            Debug.LogWarning("Lost panel is missing from Game Controller game object");
+        }
+        else
+        {
+            lostPanel.gameObject.SetActive(false);
+        }
+        if (!winPanel)
+        {
+            Debug.LogWarning("Win panel is missing from Game Controller game object");
+        }
+        else
+        {
+            winPanel.gameObject.SetActive(false);
+        }
     }
     
     void Update()
     {
-        if (!player || !playerRigidbody || !playerScript ||!scoreManager ||!pausePanel)
+        if (!player || !playerRigidbody || !playerScript ||!scoreManager ||!pausePanel ||!lostPanel ||!winPanel)
         {
             return;
         }
@@ -125,16 +143,20 @@ public class GameController : MonoBehaviour
     {
         if(score >= scoreManager.scoreToWin)
         {
-            Debug.Log("Win");
-            gameIsFinished = true;
-            DestroyAllTargets();
+            winPanel.gameObject.SetActive(true);
+            ManageEndOfGame();
         }
         else if (score < 0) 
         {
-            Debug.Log("Lost");
-            gameIsFinished = true;
-            DestroyAllTargets();
+            lostPanel.gameObject.SetActive(true);
+            ManageEndOfGame();
         }
+    }
+
+    private void ManageEndOfGame()
+    {
+        gameIsFinished = true;
+        DestroyAllTargets();
     }
 
     private void DestroyAllTargets()

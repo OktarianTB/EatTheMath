@@ -39,6 +39,7 @@ public class TargetMovement : MonoBehaviour
         {
             MoveTarget();
         }
+        TargetIsOffScreen();
     }
 
     void SetColliderRadiusToRadiusOfTarget()
@@ -61,9 +62,12 @@ public class TargetMovement : MonoBehaviour
         transform.position = new Vector2(transform.position.x - movement, transform.position.y);
     }
 
-    private void OnBecameInvisible()
+    private void TargetIsOffScreen()
     {
-        Destroy(this.gameObject);
+        if(transform.position.x < - gameController.halfHeight * 2)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
 }
