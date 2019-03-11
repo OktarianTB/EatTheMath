@@ -9,6 +9,8 @@ public class GameController : MonoBehaviour
     public GameObject pausePanel;
     public GameObject winPanel;
     public GameObject lostPanel;
+    public GameObject winParticleLeft;
+    public GameObject winParticleRight;
 
     Rigidbody2D playerRigidbody;
     ScoreManager scoreManager;
@@ -70,6 +72,10 @@ public class GameController : MonoBehaviour
         else
         {
             winPanel.gameObject.SetActive(false);
+        }
+        if(!winParticleLeft || !winParticleRight)
+        {
+            Debug.LogWarning("Particle system is missing on Game Controller");
         }
     }
     
@@ -145,6 +151,7 @@ public class GameController : MonoBehaviour
         {
             winPanel.gameObject.SetActive(true);
             ManageEndOfGame();
+            PlayWinParticles();
         }
         else if (score < 0) 
         {
@@ -168,4 +175,14 @@ public class GameController : MonoBehaviour
         gameIsActive = false;
         stopMovingPos = player.transform.position;
     }
+
+    private void PlayWinParticles()
+    {
+        if(winParticleLeft && winParticleRight)
+        {
+            Instantiate(winParticleRight);
+            Instantiate(winParticleLeft);
+        }
+    }
+
 }

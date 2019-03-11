@@ -44,3 +44,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  pausePanel: {fileID: 0}
+  winPanel: {fileID: 0}
+  lostPanel: {fileID: 0}
+  winParticleLeft: {fileID: 8012749284329480967, guid: bddf65faafb73804997b832f7da3750f,
+    type: 3}
+  winParticleRight: {fileID: 3170829295225426908, guid: 3fa0b7bbe0abd9344bf8abf774e8e713,
+    type: 3}
+  gameIsActive: 1
+  halfHeight: 0

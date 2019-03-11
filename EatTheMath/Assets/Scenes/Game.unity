@@ -644,11 +644,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 4692722827382728103, guid: 589bd7ebc3b075842956684f30df7348,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4692722827382728102, guid: 589bd7ebc3b075842956684f30df7348,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -718,26 +713,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_isInputParsingRequired
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2615290834008034114, guid: 589bd7ebc3b075842956684f30df7348,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4692722827844117467, guid: 589bd7ebc3b075842956684f30df7348,
-        type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4692722827844117466, guid: 589bd7ebc3b075842956684f30df7348,
-        type: 3}
-      propertyPath: m_SortingLayerID
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4692722827844117466, guid: 589bd7ebc3b075842956684f30df7348,
-        type: 3}
-      propertyPath: m_SortingLayer
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 589bd7ebc3b075842956684f30df7348, type: 3}
